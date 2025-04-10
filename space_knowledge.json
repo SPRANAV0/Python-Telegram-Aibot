@@ -1,0 +1,42 @@
+[
+    {
+        "question": "What is a black hole?",
+        "answer": "A black hole is a region of space where the gravitational pull is so strong that nothing, not even light, can escape from it."
+    },
+    {
+        "question": "How many planets are in our solar system?",
+        "answer": "There are 8 planets in our solar system: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune."
+    },
+    {
+        "question": "What is the Sun made of?",
+        "answer": "The Sun is primarily made of hydrogen (about 74%) and helium (about 24%), with small amounts of heavier elements."
+    },
+    {
+        "question": "What is a supernova?",
+        "answer": "A supernova is the explosion of a star, which occurs at the end of its life cycle and results in a sudden, extremely bright burst of radiation."
+    },
+    {
+        "question": "Which planet is known as the Red Planet?",
+        "answer": "Mars is known as the Red Planet because of its reddish appearance, which is due to iron oxide (rust) on its surface."
+    },
+    {
+        "question": "What galaxy do we live in?",
+        "answer": "We live in the Milky Way galaxy."
+    },
+    {
+        "question": "What is the Hubble Space Telescope?",
+        "answer": "The Hubble Space Telescope is a large space-based observatory launched in 1990 that has provided some of the most detailed images of distant galaxies, stars, and planets."
+    },
+    {
+        "question": "What is a comet?",
+        "answer": "A comet is a small icy body in space that, when close to the Sun, heats up and displays a visible atmosphere or coma and sometimes a tail."
+    },
+    {
+        "question": "What is the Big Bang theory?",
+        "answer": "The Big Bang theory is the leading explanation for how the universe began, suggesting it started from an extremely hot and dense point and expanded over billions of years."
+    },
+    {
+        "question": "What is dark matter?",
+        "answer": "Dark matter is a type of matter thought to account for approximately 85% of the matter in the universe. It does not emit light or energy, making it invisible and detectable only through its gravitational effects."
+    }
+]

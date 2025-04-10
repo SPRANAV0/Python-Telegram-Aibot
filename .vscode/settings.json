@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./venv/Lib/site-packages/zipp-3.21.0.dist-info"
+    ]
+}

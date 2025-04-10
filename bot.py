@@ -4,15 +4,15 @@ import nest_asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
-    ContextTypes, MessageHandler, filters
+    ContextTypes
 )
 
 nest_asyncio.apply()
 
 # --- Bot Token ---
-TOKEN = "7886373038:AAHwdjGys_nMyLsFpXaKcUIpjQze8s9glbI"  # Or paste your token directly for local testing
+TOKEN = "YOUR_BOT_TOKEN_HERE"  # Replace with your actual bot token
 
-# --- Commands ---
+# --- Command Handlers ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "\U0001F680 Welcome to *Space Exploration*! I'm Shiva 🚀\nUse /help to see all available commands.",
@@ -30,6 +30,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/stars - Star life cycle\n"
         "/blackholes - Information on black holes\n"
         "/galaxies - Types of galaxies\n"
+        "/quiz - Take a space quiz!",
         parse_mode='Markdown'
     )
 
@@ -123,12 +124,37 @@ async def galaxies(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown'
     )
 
+# --- Quiz Feature ---
+quiz_questions = [
+    ("Which planet is known as the Red Planet?", ["Mars", "Earth", "Jupiter", "Venus"], 0),
+    ("What is the name of India’s Mars mission?", ["Mangalyaan", "Chandrayaan", "NavIC", "Gaganyaan"], 0),
+    ("Which is the largest planet in our solar system?", ["Jupiter", "Saturn", "Earth", "Neptune"], 0)
+]
+
+async def quiz(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    question, options, _ = quiz_questions[0]
+    buttons = [[InlineKeyboardButton(text=opt, callback_data=f"quiz_0_{i}")] for i, opt in enumerate(options)]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await update.message.reply_text(f"🧠 *Quiz Time!*\n\n{question}", reply_markup=reply_markup, parse_mode='Markdown')
+
+async def handle_quiz_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    _, qid, selected = query.data.split("_")
+    qid, selected = int(qid), int(selected)
+    _, _, correct = quiz_questions[qid]
+
+    if selected == correct:
+        await query.edit_message_text("✅ *Correct! Well done!*", parse_mode='Markdown')
+    else:
+        await query.edit_message_text("❌ *Oops! That's not right.*", parse_mode='Markdown')
+
 # --- Main Function ---
 async def main():
     print("🚀 Bot is starting...")
     app = ApplicationBuilder().token(TOKEN).build()
 
-    # Command handlers
+    # Command Handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("isro", isro))
@@ -139,10 +165,14 @@ async def main():
     app.add_handler(CommandHandler("stars", stars))
     app.add_handler(CommandHandler("blackholes", blackholes))
     app.add_handler(CommandHandler("galaxies", galaxies))
+    app.add_handler(CommandHandler("quiz", quiz))
 
- # Run bot
+    # Callback for quiz
+    app.add_handler(CallbackQueryHandler(handle_quiz_callback, pattern="^quiz_"))
+
+    # Run the bot
     await app.run_polling(poll_interval=1.0)
 
-# --- Run Bot ---
+# --- Run ---
 if __name__ == "__main__":
     asyncio.run(main())

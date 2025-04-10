@@ -4,15 +4,15 @@ import nest_asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
-    ContextTypes
+    ContextTypes, MessageHandler, filters
 )
 
 nest_asyncio.apply()
 
 # --- Bot Token ---
-TOKEN = "YOUR_BOT_TOKEN_HERE"  # Replace with your actual bot token
+TOKEN = "7886373038:AAHwdjGys_nMyLsFpXaKcUIpjQze8s9glbI"  # Or paste your token directly for local testing
 
-# --- Command Handlers ---
+# --- Commands ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "\U0001F680 Welcome to *Space Exploration*! I'm Shiva 🚀\nUse /help to see all available commands.",
@@ -124,7 +124,7 @@ async def galaxies(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown'
     )
 
-# --- Quiz Feature ---
+# --- Quiz ---
 quiz_questions = [
     ("Which planet is known as the Red Planet?", ["Mars", "Earth", "Jupiter", "Venus"], 0),
     ("What is the name of India’s Mars mission?", ["Mangalyaan", "Chandrayaan", "NavIC", "Gaganyaan"], 0),
@@ -149,12 +149,33 @@ async def handle_quiz_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         await query.edit_message_text("❌ *Oops! That's not right.*", parse_mode='Markdown')
 
+# --- Chat Handler ---
+async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_message = update.message.text.lower()
+
+    # Simple AI-like responses
+    if "mars" in user_message:
+        reply = "Mars is the fourth planet and is often called the Red Planet due to iron oxide on its surface."
+    elif "black hole" in user_message:
+        reply = "A black hole is a region in space where gravity is so strong that not even light can escape!"
+    elif "hello" in user_message or "hi" in user_message:
+        reply = "Hello, stargazer! ✨ Ask me anything about space!"
+    elif "who are you" in user_message:
+        reply = "I'm Shiva, your friendly space exploration bot. I can tell you about planets, stars, and galaxies!"
+    elif "jupiter" in user_message:
+        reply = "Jupiter is the largest planet in our solar system and has 92 moons!"
+    else:
+        reply = "I’m still learning 🌱 Try asking about planets, stars, galaxies, or space missions!"
+
+    await update.message.reply_text(reply)
+    from knowledge_base import load_knowledge_base
+    knowledge_base = load_knowledge_base("space_knowledge.json")
 # --- Main Function ---
 async def main():
     print("🚀 Bot is starting...")
     app = ApplicationBuilder().token(TOKEN).build()
 
-    # Command Handlers
+    # Command handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("isro", isro))
@@ -166,13 +187,50 @@ async def main():
     app.add_handler(CommandHandler("blackholes", blackholes))
     app.add_handler(CommandHandler("galaxies", galaxies))
     app.add_handler(CommandHandler("quiz", quiz))
+    
+    from knowledge_base import load_knowledge_base
+    knowledge_base = load_knowledge_base("space_knowledge.json")
 
-    # Callback for quiz
+    def find_answer(user_query):
+     for item in knowledge_base:
+        if item["question"].lower() in user_query:
+            return item["answer"]
+     return None
+
+    async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+     user_message = update.message.text.lower()
+     answer = find_answer(user_message)
+
+     if answer:
+        reply = answer
+     else:
+        # fallback response
+        if "mars" in user_message:
+            reply = "Mars is the fourth planet and is often called the Red Planet due to iron oxide on its surface."
+        elif "black hole" in user_message:
+            reply = "A black hole is a region in space where gravity is so strong that not even light can escape!"
+        elif "hello" in user_message or "hi" in user_message:
+            reply = "Hello, stargazer! ✨ Ask me anything about space!"
+        elif "who are you" in user_message:
+            reply = "I'm Shiva, your friendly space exploration bot. I can tell you about planets, stars, and galaxies!"
+        elif "jupiter" in user_message:
+            reply = "Jupiter is the largest planet in our solar system and has 92 moons!"
+        else:
+            reply = "I’m still learning 🌱 Try asking something else related to space!"
+
+     await update.message.reply_text(reply)
+
+ 
+
+    # Quiz callback
     app.add_handler(CallbackQueryHandler(handle_quiz_callback, pattern="^quiz_"))
 
-    # Run the bot
+    # General text (chatbot) handler
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat_handler))
+
+    # Run bot
     await app.run_polling(poll_interval=1.0)
 
-# --- Run ---
+# --- Run Bot ---
 if __name__ == "__main__":
     asyncio.run(main())

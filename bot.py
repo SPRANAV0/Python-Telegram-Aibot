@@ -197,28 +197,6 @@ async def main():
             return item["answer"]
      return None
 
-    async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-     user_message = update.message.text.lower()
-     answer = find_answer(user_message)
-
-     if answer:
-        reply = answer
-     else:
-        # fallback response
-        if "mars" in user_message:
-            reply = "Mars is the fourth planet and is often called the Red Planet due to iron oxide on its surface."
-        elif "black hole" in user_message:
-            reply = "A black hole is a region in space where gravity is so strong that not even light can escape!"
-        elif "hello" in user_message or "hi" in user_message:
-            reply = "Hello, stargazer! ✨ Ask me anything about space!"
-        elif "who are you" in user_message:
-            reply = "I'm Shiva, your friendly space exploration bot. I can tell you about planets, stars, and galaxies!"
-        elif "jupiter" in user_message:
-            reply = "Jupiter is the largest planet in our solar system and has 92 moons!"
-        else:
-            reply = "I’m still learning 🌱 Try asking something else related to space!"
-
-     await update.message.reply_text(reply)
 
  
 

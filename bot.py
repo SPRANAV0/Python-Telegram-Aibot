@@ -189,6 +189,7 @@ async def main():
     app.add_handler(CommandHandler("quiz", quiz))
     
     from knowledge_base import load_knowledge_base
+
     knowledge_base = load_knowledge_base("space_knowledge.json")
 
     def find_answer(user_query):
